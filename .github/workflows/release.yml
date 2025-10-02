@@ -15,37 +15,37 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: '6.9.3'
+        version: '6.5.3'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_mingw'
-        tools: 'tools_mingw90'
+        arch: 'win64_msvc2019_64'
+        tools: 'tools_cmake'
     
-    - name: Setup MinGW
-      uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x64
+    - name: Setup MSVC
+      uses: microsoft/setup-msbuild@v1.3
     
     - name: Configure CMake
-      run: cmake -B build -S . -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+      run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
     
     - name: Build
       run: cmake --build build --config Release
     
     - name: Deploy Qt
       run: |
-        cd build
-        windeployqt.exe GameBird.exe --qmldir ../qml
+        cd build/Release
+        windeployqt.exe GameBird.exe --qmldir ../../qml --release
     
     - name: Install Inno Setup
       run: |
-        Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile "innosetup.exe"
-        Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
+        choco install innosetup -y
+    
+    - name: Update Installer Script
+      run: |
+        (Get-Content installer.iss) -replace 'build\\', 'build/Release/' | Set-Content installer.iss
     
     - name: Create Installer
       run: |
-        $env:PATH += ";C:\Program Files (x86)\Inno Setup 6"
-        iscc installer.iss
+        & "C:\Program Files (x86)\Inno Setup 6\iscc.exe" installer.iss
     
     - name: Create Release
       uses: softprops/action-gh-release@v1
