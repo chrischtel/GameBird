@@ -301,18 +301,22 @@ ApplicationWindow {
                                 model: gameLibrary
                                 spacing: 8
                                 
-                                delegate: GameItem {
+                                delegate: Loader {
                                     width: parent.width
-                                    visible: isFavorite
-                                    height: visible ? implicitHeight : 0
-                                    gameTitle: title
-                                    gameExecutablePath: executablePath
-                                    gameIconPath: iconPath
-                                    gameIsFavorite: isFavorite
+                                    active: isFavorite
+                                    visible: active
                                     
-                                    onLaunchRequested: gameLibrary.launchGame(index)
-                                    onFavoriteToggled: gameLibrary.toggleFavorite(index)
-                                    onRemoveRequested: gameLibrary.removeGame(index)
+                                    sourceComponent: GameItem {
+                                        width: parent.width
+                                        gameTitle: title
+                                        gameExecutablePath: executablePath
+                                        gameIconPath: iconPath
+                                        gameIsFavorite: isFavorite
+                                        
+                                        onLaunchRequested: gameLibrary.launchGame(index)
+                                        onFavoriteToggled: gameLibrary.toggleFavorite(index)
+                                        onRemoveRequested: gameLibrary.removeGame(index)
+                                    }
                                 }
                             }
                         }
