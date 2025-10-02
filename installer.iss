@@ -11,7 +11,6 @@ AllowNoIcons=yes
 LicenseFile=LICENSE
 OutputDir=Output
 OutputBaseFilename=GameBird-v0.1.0-Setup
-SetupIconFile=assets\icon.ico
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
